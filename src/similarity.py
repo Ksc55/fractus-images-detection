@@ -56,7 +56,6 @@ def get_similarity_score(first_image : str, second_image : str):
         return embedding of the image
 
     """
-
     first_image = load_image(first_image)
     second_image = load_image(second_image)
 

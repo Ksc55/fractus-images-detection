@@ -16,14 +16,9 @@ def download_and_convert_image_from_ipfs(cid, output_path):
     
     try:
         response = requests.get(ipfs_gateway_url)
-        img = Image.open(BytesIO(response.content))
-        img.save(output_path)
-        # Ensure the directory exists
-        #os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
-        # Save the image as JPG
-        #img.convert("RGB").save(output_path, "JPG")
-        print(img)
+        img = BytesIO(response.content)
+        i = Image.open(img)
+        i.save(output_path)
         return img
     except Exception as e:
         print(f"Error downloading/convert image from IPFS: {e}")
@@ -34,8 +29,7 @@ def run_similarity():
     paths = []
     images = []
     for cid in data:
-        cid = cid.split("/")
-        image_path = f'./content/{cid[1]}'
+        image_path = f'./content/{cid.replace("/", "")}'
         paths.append(image_path)
         images.append(download_and_convert_image_from_ipfs(cid, image_path))
 
