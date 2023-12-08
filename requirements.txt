@@ -1,5 +1,12 @@
-numpy
+click
+flask
+gunicorn
+itsdangerous
+jinja2
+markupSafe
+werkzeug
 pillow
+requests
 tensorflow
-matplotlib
 scikit-learn
+matplotlib
