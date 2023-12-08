@@ -1,18 +1,14 @@
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 from flask import Flask, request, jsonify
 import os
 import subprocess
 import requests
 from PIL import Image
 from io import BytesIO
-
 app = Flask(__name__)
-
-def get_similarity_score(image_path1, image_path2):
-    try:
-        result = subprocess.check_output(["python", "similarity_script.py", image_path1, image_path2], text=True)
-        return result.strip()
-    except subprocess.CalledProcessError as e:
-        return str(e)
+from similarity import get_similarity_score
 
 def download_and_convert_image_from_ipfs(cid, output_path):
     ipfs_gateway_url = f"https://ipfs.io/ipfs/{cid}"
@@ -21,28 +17,30 @@ def download_and_convert_image_from_ipfs(cid, output_path):
     try:
         response = requests.get(ipfs_gateway_url)
         img = Image.open(BytesIO(response.content))
-        
+        img.save(output_path)
         # Ensure the directory exists
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        #os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
         # Save the image as JPG
-        img.convert("RGB").save(output_path, "JPEG")
-        
-        print(f"Image downloaded and converted successfully to: {output_path}")
+        #img.convert("RGB").save(output_path, "JPG")
+        print(img)
+        return img
     except Exception as e:
         print(f"Error downloading/convert image from IPFS: {e}")
 
 @app.route('/run-similarity', methods=['POST'])
 def run_similarity():
     data = request.get_json()
-    python_script_path = "similarity_script.py"
-
-    for key, cid in data.items():
-        image_path = f'./content/{key}.jpg'
-        download_and_convert_image_from_ipfs(cid, image_path)
+    paths = []
+    images = []
+    for cid in data:
+        cid = cid.split("/")
+        image_path = f'./content/{cid[1]}'
+        paths.append(image_path)
+        images.append(download_and_convert_image_from_ipfs(cid, image_path))
 
     try:
-        result = get_similarity_score('./content/1.jpg', './content/2.jpg')
+        result = get_similarity_score(paths[0], paths[1])
         return jsonify(result), 200
     except Exception as e:
         print(f"Error running similarity script: {e}")

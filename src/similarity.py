@@ -73,27 +73,6 @@ def show_image(image_path):
   plt.savefig('temp.png')  # Save the figure to a file instead of showing
   plt.close()
 
-# define the path of the images
-image1 = './content/1.jpg'
-image2 = './content/2.jpg'
-
-# use the show_image function to plot the images
-show_image(image1), show_image(image2)
-
-similarity_score = get_similarity_score(image1, image2)
-print(similarity_score)
-
-# # define the path of the images
-super = './content/super.jpg'
-
-show_image(image1), show_image(super)
-
-similarity_score = get_similarity_score(image1, super)
-
-print(similarity_score)
-
-# Delete the temporary image file
-os.remove('temp.png')
 
 # Workflow => 
 
