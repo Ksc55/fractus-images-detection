@@ -51,7 +51,7 @@ def run_similarity():
             secondImage =  secondImage.replace("./content/", "")
             secondImage = secondImage.replace("piece", "/piece")
             arrayResults.append({
-                'path': secondImage,
+                'image': "https://ipfs.io/ipfs/"+secondImage,
                 'similarity_score': float(result[0])
             })
             arrayResults.sort(key=lambda x: x['similarity_score'], reverse=True)
