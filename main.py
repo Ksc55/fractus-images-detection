@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 import os
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
-from flask import Flask, request, jsonify
 import os
 import subprocess
 import requests
@@ -49,6 +48,8 @@ def run_similarity():
             if images[i] is None:
                 continue  # Skip similarity calculation if image doesn't exist
             result = get_similarity_score(firstImage, secondImage)
+            secondImage =  secondImage.replace("./content/", "")
+            secondImage = secondImage.replace("piece", "/piece")
             arrayResults.append({
                 'path': secondImage,
                 'similarity_score': float(result[0])
